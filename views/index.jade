@@ -1,0 +1,36 @@
+extends layout
+
+block head
+	title= '阿瓦隆'
+	script(type='text/javascript', src='https://cdn.wilddog.com/js/client/current/wilddog.js')
+	link(rel='stylesheet', href='/style/index.css')
+	script(type='text/javascript', src='/script/config.js')
+	script(type='text/javascript', src='/script/index.js')
+block content
+	#step1.wrapper
+		h2 阿瓦隆
+		input#int_name.font-normal(type='text', placeholder='玩家姓名')
+		input#int_room.font-normal(type='number', placeholder='房间号')
+		a.btn#sub_init.font-big(href='javascript:;') 进入房间
+	#step2.wrapper
+		h2
+		ul#player_list.clearfix
+			li.font-big(v-for="player in players") {{ player.name }}
+		center.font-middle 等待其他玩家加入...
+		a.btn#start.font-big(href='javascript:;') 开始游戏
+		a.btn#quit_room.font-big(href='javascript:;') 退出房间
+	#step3.wrapper
+		h2 游戏中
+		ul#role_list.clearfix
+			li.font-big(v-for="role in roles") {{ role.name }}
+		dl#my_role.font-middle
+			dd.clearfix
+				span.title 我的身份
+				span.content {{my}}
+			dd.clearfix
+				span.title {{see.name}}
+				span.content {{see.players}}
+		center.font-middle 以上身份随机排序
+		a.btn#volt.font-big(href='javascript:;') 发起投票
+		a.btn#end_game.font-big(href='javascript:;') 结束游戏
+		

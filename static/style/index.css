@@ -1,0 +1,60 @@
+input{
+	margin:1rem .5rem 0;
+	padding:.5rem;
+	width:14rem;
+	border:1px solid #ccc;
+	border-radius:.2rem;
+}
+input[disabled='disabled']{
+	background:#f1f1f1;
+}
+
+h2{
+	background:#f1f1f6;
+	text-align: center;
+	height: 1.5rem;
+	line-height: 1.5rem;
+}
+.btn{
+	margin:1rem .5rem 0;
+	width:15rem;
+	height:2rem;
+	line-height:2rem;
+	text-align:center;
+	display:block;
+	background:#f1f1f1;
+	border-radius:.2rem;
+	color:#555;
+}
+#step2,#step3{
+	display: none;
+}
+center{
+	color:#c2c3c4;
+	font-style:italic;
+}
+ul,dl{
+	margin:.5rem;
+}
+ul li{
+	float:left;
+	margin:.5rem;
+	padding:.2rem .5rem;
+	border-radius:.5rem;
+	background:#f1f1f6;
+}
+dd{
+	line-height:1.5rem;
+}
+dd .title{
+	color:#999;
+	font-weight:bold;
+	width:7.25rem;
+	padding-right:.5rem;
+	text-align: right;
+	float:left;
+}
+dd .contert{
+	color:#555;
+	float:left;
+}
