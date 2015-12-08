@@ -58,3 +58,27 @@ dd .contert{
 	color:#555;
 	float:left;
 }
+.popup{
+	width:100%;
+	height:100%;
+	background:#fff;
+	position: absolute;
+	top:0;
+	left: 0;
+	display: none;
+}
+.popup h2{
+	margin-bottom:2rem;
+}
+#right,#wrong{
+	border:1px solid #ccc;
+	width:10rem;
+	margin:1.5rem 3rem;
+	height:2rem;
+	line-height:2rem;
+	text-align: center;
+	background:#f6f6f6;
+}
+#volt_result{
+	display: none;
+}

@@ -31,6 +31,13 @@ block content
 				span.title {{see.name}}
 				span.content {{see.players}}
 		center.font-middle 以上身份随机排序
-		a.btn#volt.font-big(href='javascript:;') 发起投票
+		ul#volt_list.clearfix
+			li.font-big(v-for="player in players") {{ player }}
+		center#volt_result.font-middle {{result}}
+
+		a.btn#volt.font-big(href='javascript:;') 参加投票
 		a.btn#end_game.font-big(href='javascript:;') 结束游戏
-		
+	.popup.font-middle
+		h2 投票
+		div#right 成功
+		div#wrong 失败

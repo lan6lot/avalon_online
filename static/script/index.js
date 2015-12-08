@@ -1,5 +1,5 @@
 /**
- * Avalon
+ * 自用Avalon桌游发号器
  */
 
 var ref = new Wilddog("https://avalon.wilddogio.com/");
@@ -85,6 +85,20 @@ avalon.prototype.enter_room = function(){
 		}
 	})
 
+	_.volt = new Vue({
+		el: '#volt_list',
+		data: {
+			players : []
+		}
+	})
+
+	_.volt_result = new Vue({
+		el: '#volt_result',
+		data: {
+			result : ''
+		}
+	})
+
 	_.database.room.child(_.room).on('value',function(snap){
 		var _val = snap.val();
 		_.players = _.player_list.players = _val.players;
@@ -112,8 +126,43 @@ avalon.prototype.enter_room = function(){
 						}
 					}
 				}
-				my_see.name = '你能看到的人'
 				_.my_role.see = my_see;
+			}
+			if(_val.volt){
+				if(_val.volt.players){
+					_.volt.players = _val.volt.players;
+				}else{
+					$('#volt').removeClass('volting');
+					$('#volt').html('参加投票');
+					_.volt.players = [];
+					$('#volt_result').hide();
+				}
+				if(_val.volt.result){
+					var _r = _val.volt.result,
+						_r_r = 0,
+						_r_w = 0;
+					
+					for(var i in _r){
+						if(_r[i]){
+							_r_r++;
+						}else{
+							_r_w++
+						}
+					}
+					_.volt_result.result = '成功:'+_r_r+' 失败:'+_r_w;
+				}else{
+					$('#volt_result').hide();
+				}
+				if(_val.volt.volting && _val.volt.volting == 'finish'){
+					$('#volt_result').show();
+					setTimeout(function(){
+						_.database.room.child(_.room).child('volt').child('volting').set(null);
+						_.database.room.child(_.room).child('volt').child('players').set(null);
+						_.database.room.child(_.room).child('volt').child('result').set(null);
+					},10000)
+				}else{
+					$('#volt_result').hide();
+				}
 			}
 
 		}else{
@@ -140,16 +189,49 @@ avalon.prototype.enter_room = function(){
 		_.start();
 	})
 
-	$('#end_game').click(function(){
-		_.database.room.child(_.room).child('roles').set(null);
-		_.database.room.child(_.room).child('status').set(null);
-		var _players = {};
-		for(var i in _.players){
-			_players[i] = {
-				name : i
+	$('#volt').click(function(){
+		var obj = $(this);
+		if(obj.hasClass('volting')){
+			if(confirm('请确认所有参与者都投票完毕？')){
+				_.database.room.child(_.room).child('volt').child('volting').set('finish');
+			}
+		}else{
+			if(confirm('你是否参加投票？')){
+				_.database.room.child(_.room).child('volt').child('volting').set('volting');
+				$('.popup').show();
+				obj.addClass('volting')
+				obj.html('公开投票结果');
+				_.database.room.child(_.room).child('volt').child('players').push(_.name);
 			}
 		}
-		_.database.room.child(_.room).child('players').set(_players);
+	})
+	$('#right').click(function(){
+		if(confirm('投成功？')){
+			_.database.room.child(_.room).child('volt').child('result').push(1);
+			$('.popup').hide();
+		}
+	})
+	$('#wrong').click(function(){
+		if(confirm('投反对？')){
+			_.database.room.child(_.room).child('volt').child('result').push(0);
+			$('.popup').hide();
+		}
+	})
+	$('#end_game').click(function(){
+		var obj = $(this);
+		if(confirm('确认结束游戏？')){
+			_.database.room.child(_.room).child('roles').set(null);
+			_.database.room.child(_.room).child('status').set(null);
+			_.database.room.child(_.room).child('volt').child('players').set(null);
+			_.database.room.child(_.room).child('volt').child('result').set(null);
+			var _players = {};
+			for(var i in _.players){
+				_players[i] = {
+					name : i
+				}
+			}
+			_.database.room.child(_.room).child('players').set(_players);
+		}
 	})
 }
 
@@ -180,14 +262,14 @@ avalon.prototype.start = function(){
 	for(var player in players){
 		var _index = Math.ceil(Math.random()/(1/_length))-1,
 			_role = tmp_roles[_index];
-		_players[player] = {
+
+		_length--;
+		_.database.room.child(_.room).child('players').child(player).set({
 			name : player,
 			role : _role
-		}
-		_length--;
+		});
 		tmp_roles.splice(_index,1);
 	}
-	_.database.room.child(_.room).child('players').set(_players);
 }
 
 $(document).ready(function(){
